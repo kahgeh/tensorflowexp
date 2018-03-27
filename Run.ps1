@@ -1,7 +1,5 @@
 param($path=$PSScriptRoot)
-$imageName='tensorflowexp'
-
-docker build . "-t=$imageName"  --platform=linux
+$imageName='tensorflow/tensorflow'
 
 $container=@(Get-Container)|where{$_.ports.PublicPort -eq '8888'}
 if ( $container -ne $null )
@@ -16,12 +14,12 @@ if ( $container -ne $null )
     }
     else 
     {
-        Write-Information 'Terminating without doing anything other than build the Dockerfile'
+        Write-Information 'Terminating'
         exit    
     }
 }
 
 Write-Progress 'Starting container' -CurrentOperation 'start' -PercentComplete 0
-docker run -d -v "$($path):/root/notebook" -p 8888:8888 -p 6006:6006 -e PASSWORD=p $imageName 
-
+$containerId=docker run -d -v "$($path):/notebooks" -p 8888:8888 -p 6006:6006 -e PASSWORD=p $imageName
 Write-Progress 'Starting container' -CurrentOperation 'done' -PercentComplete 100 
+docker exec -it $containerId bash 

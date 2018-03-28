@@ -1,7 +1,7 @@
 param($path=$PSScriptRoot)
 $imageName='tensorflow/tensorflow'
 
-$container=@(Get-Container)|where{$_.ports.PublicPort -eq '8888'}
+$container=@(Get-Container) | Where-Object {$_.ports.PublicPort -eq '8888'}
 if ( $container -ne $null )
 {
     if((Read-Host "Do you want to kill $($container.Names) (y|n)?") -eq 'y' )
